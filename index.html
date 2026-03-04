@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,429 +9,856 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* ===== Theme Variables ===== */
+        :root {
+            --bg: #0a0a0a;
+            --bg-sec: rgba(17, 25, 40, 0.5);
+            --bg-card: rgba(17, 25, 40, 0.75);
+            --tx: #f9fafb;
+            --tx2: #e5e7eb;
+            --tx3: #9ca3af;
+            --tx4: #6b7280;
+            --accent: #3b82f6;
+            --accent2: #8b5cf6;
+            --glass: rgba(17, 25, 40, 0.75);
+            --glass-b: rgba(255, 255, 255, 0.125);
+            --tag: rgba(55, 65, 81, 0.8);
+            --hover-b: rgba(59, 130, 246, 0.3);
+            --prgb: 59, 130, 246;
+            --tl: #374151;
+        }
+        [data-theme="light"] {
+            --bg: #fafafa;
+            --bg-sec: rgba(243, 244, 246, 0.5);
+            --bg-card: rgba(255, 255, 255, 0.8);
+            --tx: #111827;
+            --tx2: #374151;
+            --tx3: #6b7280;
+            --tx4: #9ca3af;
+            --accent: #2563eb;
+            --accent2: #7c3aed;
+            --glass: rgba(255, 255, 255, 0.8);
+            --glass-b: rgba(0, 0, 0, 0.08);
+            --tag: rgba(229, 231, 235, 0.8);
+            --hover-b: rgba(37, 99, 235, 0.3);
+            --prgb: 37, 99, 235;
+            --tl: #d1d5db;
+        }
+
+        /* ===== Base ===== */
+        * { box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #0a0a0a;
-            color: #e5e7eb;
+            background-color: var(--bg);
+            color: var(--tx2);
+            overflow-x: hidden;
+            transition: background-color 0.6s ease, color 0.4s ease;
         }
-        .section-fade-in {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        html.lenis, html.lenis body { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+
+        /* ===== Cursor Gradient ===== */
+        .cursor-glow {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(600px circle at var(--cx, 50%) var(--cy, 50%),
+                rgba(var(--prgb), 0.07), transparent 70%);
+            transition: opacity 0.3s ease;
         }
-        .section-fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
+
+        /* ===== Particles Canvas ===== */
+        #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+        /* ===== Scroll Progress ===== */
+        .scroll-bar {
+            position: fixed; top: 0; left: 0; height: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            z-index: 200; width: 0;
         }
-        .glassmorphism {
-            background: rgba(17, 25, 40, 0.75);
+
+        /* ===== Glass ===== */
+        .glass {
+            background: var(--glass);
             backdrop-filter: blur(16px) saturate(180%);
             -webkit-backdrop-filter: blur(16px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.125);
+            border: 1px solid var(--glass-b);
+            transition: background-color 0.5s ease, border-color 0.5s ease;
         }
-        .accent-gradient {
-            background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+
+        /* ===== Gradient Text ===== */
+        .grad {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .typewriter-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 1.5rem;
-            background-color: #3b82f6;
-            animation: blink 0.7s infinite;
-            margin-left: 4px;
+
+        /* ===== Typewriter ===== */
+        .tw-cursor {
+            display: inline-block; width: 3px; height: 1.3em;
+            background: var(--accent); border-radius: 1px;
+            animation: blink 0.8s ease-in-out infinite;
+            margin-left: 2px; vertical-align: text-bottom;
         }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* ===== Scroll Reveal ===== */
+        .sr { opacity: 0; transform: translateY(30px);
+            transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .sr-l { opacity: 0; transform: translateX(-40px);
+            transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .sr-r { opacity: 0; transform: translateX(40px);
+            transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .sr-s { opacity: 0; transform: scale(0.95);
+            transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1); }
+        .sr.v, .sr-l.v, .sr-r.v, .sr-s.v { opacity: 1; transform: none; }
+
+        /* Stagger children */
+        .stg > * { opacity: 0; transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1); }
+        .stg.v > * { opacity: 1; transform: none; }
+        .stg.v > *:nth-child(1) { transition-delay: 0.06s; }
+        .stg.v > *:nth-child(2) { transition-delay: 0.12s; }
+        .stg.v > *:nth-child(3) { transition-delay: 0.18s; }
+        .stg.v > *:nth-child(4) { transition-delay: 0.24s; }
+        .stg.v > *:nth-child(5) { transition-delay: 0.30s; }
+        .stg.v > *:nth-child(6) { transition-delay: 0.36s; }
+
+        /* ===== Card Glow ===== */
+        .card-glow {
+            position: relative; overflow: hidden;
+            border: 1px solid var(--glass-b);
+            transition: border-color 0.3s ease, transform 0.4s cubic-bezier(0.16,1,0.3,1), background-color 0.5s ease;
+            background: var(--bg-card);
         }
+        .card-glow:hover { border-color: var(--hover-b); transform: translateY(-4px); }
+        .card-glow::after {
+            content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0;
+            transition: opacity 0.4s ease;
+            background: radial-gradient(400px circle at var(--mx,50%) var(--my,50%), rgba(var(--prgb),0.08), transparent 60%);
+            pointer-events: none;
+        }
+        .card-glow:hover::after { opacity: 1; }
+
+        /* ===== Nav Links ===== */
+        .nav-a {
+            position: relative; color: var(--tx3);
+            transition: color 0.3s ease;
+        }
+        .nav-a::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 2px; border-radius: 1px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            transition: width 0.3s cubic-bezier(0.16,1,0.3,1);
+        }
+        .nav-a:hover, .nav-a.active { color: var(--tx); }
+        .nav-a:hover::after, .nav-a.active::after { width: 100%; }
+
+        /* ===== Theme Toggle ===== */
+        .theme-btn {
+            width: 40px; height: 40px; border-radius: 12px;
+            border: 1px solid var(--glass-b); background: transparent;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            color: var(--tx3); position: relative;
+            transition: color 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+        }
+        .theme-btn:hover { color: var(--tx); transform: scale(1.1); }
+        .theme-btn .ic-s, .theme-btn .ic-m {
+            position: absolute;
+            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.16,1,0.3,1);
+        }
+        .theme-btn .ic-s { opacity: 0; transform: rotate(-90deg) scale(0); }
+        .theme-btn .ic-m { opacity: 1; transform: rotate(0) scale(1); }
+        [data-theme="light"] .theme-btn .ic-s { opacity: 1; transform: rotate(0) scale(1); }
+        [data-theme="light"] .theme-btn .ic-m { opacity: 0; transform: rotate(90deg) scale(0); }
+
+        /* ===== Magnetic ===== */
+        [data-magnetic] { transition: transform 0.4s cubic-bezier(0.16,1,0.3,1); }
+
+        /* ===== Float ===== */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        .float-anim { animation: float 6s ease-in-out infinite; }
+
+        /* ===== Mobile Menu ===== */
+        .mob-menu {
+            max-height: 0; overflow: hidden; opacity: 0;
+            transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1), opacity 0.3s ease;
+        }
+        .mob-menu.open { max-height: 400px; opacity: 1; }
+
+        /* ===== Timeline Pulse ===== */
+        @keyframes pulse-ring {
+            0% { transform: scale(1); opacity: 0.5; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .tl-dot { position: relative; }
+        .tl-dot::before {
+            content: ''; position: absolute; inset: -4px; border-radius: 50%;
+            border: 2px solid var(--accent); animation: pulse-ring 2.5s ease-out infinite;
+        }
+
+        /* ===== Scroll Hint ===== */
+        @keyframes scroll-hint {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 0.8; transform: translateY(8px); }
+        }
+        .scroll-hint { animation: scroll-hint 2.5s ease-in-out infinite; }
+
+        /* ===== Page Load ===== */
+        .page-wrap { opacity: 0; transition: opacity 0.8s ease; }
+        .page-wrap.loaded { opacity: 1; }
+
+        /* ===== Section Divider ===== */
+        .divider {
+            width: 60px; height: 3px; border-radius: 2px;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+        }
+
+        /* ===== Utility Classes ===== */
+        .c1 { color: var(--tx); }
+        .c2 { color: var(--tx2); }
+        .c3 { color: var(--tx3); }
+        .c4 { color: var(--tx4); }
+        .ca { color: var(--accent); }
+        .bg-m { background-color: var(--bg); }
+        .bg-s { background-color: var(--bg-sec); }
+        .bg-c { background-color: var(--bg-card); }
+        .bg-t { background-color: var(--tag); }
+        .bb { border-color: var(--glass-b); }
+        .bt { border-color: var(--tl); }
     </style>
 </head>
 <body class="antialiased">
-    <!-- Header Navigation -->
-    <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 glassmorphism">
+    <!-- Particles Canvas -->
+    <canvas id="particles"></canvas>
+
+    <!-- Cursor Gradient -->
+    <div class="cursor-glow" id="cursor-glow"></div>
+
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-bar" id="scroll-bar"></div>
+
+    <!-- Page Wrapper -->
+    <div class="page-wrap" id="page-wrap">
+
+    <!-- ===== Header ===== -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#" class="text-2xl font-bold tracking-tight">
-                Fuad <span class="accent-gradient">Hasan</span>
+            <a href="#" class="text-2xl font-bold tracking-tight c1" style="transition: color 0.3s ease;">
+                Fuad <span class="grad">Hasan</span>
             </a>
             <nav class="hidden md:flex space-x-8 items-center">
-                <a href="#about" class="hover:text-blue-400 transition-colors">About</a>
-                <a href="#experience" class="hover:text-blue-400 transition-colors">Experience</a>
-                <a href="#projects" class="hover:text-blue-400 transition-colors">Projects</a>
-                <a href="#publications" class="hover:text-blue-400 transition-colors">Publications</a>
-                <a href="#resume" class="hover:text-blue-400 transition-colors">Resume</a>
-                <a href="#contact" class="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors">Contact</a>
+                <a href="#about" class="nav-a">About</a>
+                <a href="#experience" class="nav-a">Experience</a>
+                <a href="#projects" class="nav-a">Projects</a>
+                <a href="#publications" class="nav-a">Publications</a>
+                <a href="#resume" class="nav-a">Resume</a>
+                <a href="#contact" data-magnetic class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">Contact</a>
+                <button id="theme-toggle" class="theme-btn" aria-label="Toggle theme" data-magnetic>
+                    <svg class="ic-s w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="ic-m w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
             </nav>
-            <button id="mobile-menu-button" class="md:hidden text-gray-300 focus:outline-none">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-            </button>
+            <div class="flex items-center space-x-3 md:hidden">
+                <button id="theme-toggle-mobile" class="theme-btn" aria-label="Toggle theme">
+                    <svg class="ic-s w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="ic-m w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+                    </svg>
+                </button>
+                <button id="mobile-menu-button" class="c3 focus:outline-none" style="transition: color 0.3s ease;">
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+                    </svg>
+                </button>
+            </div>
         </div>
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden px-6 pb-4">
-            <a href="#about" class="block py-2 hover:text-blue-400 transition-colors">About</a>
-            <a href="#experience" class="block py-2 hover:text-blue-400 transition-colors">Experience</a>
-            <a href="#projects" class="block py-2 hover:text-blue-400 transition-colors">Projects</a>
-            <a href="#publications" class="block py-2 hover:text-blue-400 transition-colors">Publications</a>
-            <a href="#resume" class="block py-2 hover:text-blue-400 transition-colors">Resume</a>
-            <a href="#contact" class="block mt-2 px-4 py-2 bg-blue-600 rounded-lg text-center hover:bg-blue-700 transition-colors">Contact</a>
+        <div id="mobile-menu" class="mob-menu md:hidden px-6 pb-4">
+            <a href="#about" class="block py-2 c3 hover:c1" style="transition: color 0.3s ease;">About</a>
+            <a href="#experience" class="block py-2 c3 hover:c1" style="transition: color 0.3s ease;">Experience</a>
+            <a href="#projects" class="block py-2 c3 hover:c1" style="transition: color 0.3s ease;">Projects</a>
+            <a href="#publications" class="block py-2 c3 hover:c1" style="transition: color 0.3s ease;">Publications</a>
+            <a href="#resume" class="block py-2 c3 hover:c1" style="transition: color 0.3s ease;">Resume</a>
+            <a href="#contact" class="block mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 transition-colors">Contact</a>
         </div>
     </header>
 
+    <!-- ===== Hero Section ===== -->
     <main class="container mx-auto px-6">
-      <section class="min-h-screen flex flex-col justify-center items-center text-center pt-20 px-4">
-    <div class="max-w-4xl">
-        <div class="relative inline-block mb-10 group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-full blur opacity-25 group-hover:opacity-60 transition duration-1000"></div>
-            <img src="./Picture/Fuad.jpeg" alt="Fuad Hasan" class="relative w-40 h-40 md:w-52 md:h-52 rounded-full object-cover border-4 border-gray-800 shadow-2xl">
-        </div>
-
-        <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight">
-            Fuad Hasan
-        </h1>
-        
-        <p class="mt-4 text-xl md:text-2xl font-medium text-gray-300">
-            <span id="typewriter"></span><span class="typewriter-cursor"></span>
-        </p>
-
-        <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-400 leading-relaxed">
-            Final-year Computer Science student at <span class="text-blue-400">Sylhet International University</span>  and <span class="text-blue-400">Junior Shopify Developer</span> at ArtifyLab. Bridging the gap between <span class="font-semibold text-gray-200">Machine Learning research</span> and <span class="font-semibold text-gray-200">global e-commerce solutions</span>.
-        </p>
-
-        <div class="mt-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            <a href="mailto:fuad43002@gmail.com" class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 transform hover:-translate-y-1 transition-all duration-300">
-                Contact Me
-            </a>
-            <a href="#projects" class="w-full sm:w-auto px-8 py-4 bg-gray-800 text-white font-bold rounded-xl shadow-lg hover:bg-gray-700 border border-gray-700 transform hover:-translate-y-1 transition-all duration-300">
-                Explore Work
-            </a>
-        </div>
-    </div>
-</section>
-
-<section id="about" class="py-24 section-fade-in bg-gray-900/50">
-    <div class="max-w-5xl mx-auto px-4">
-        <div class="grid md:grid-cols-5 gap-12 items-start">
-            <div class="md:col-span-2 space-y-6">
-                <div class="glassmorphism p-6 rounded-2xl border border-gray-700">
-                    <h2 class="text-3xl font-bold mb-6 accent-gradient">About Me</h2>
-                    <p class="text-gray-300 leading-relaxed mb-4">
-                        I am a results-driven researcher and developer at <span class="text-white font-medium">Sylhet International University</span>, set to graduate in June 2026. My expertise lies at the intersection of <span class="text-blue-400">Cybersecurity</span> and <span class="text-blue-400">Artificial Intelligence</span>.
-                    </p>
-                    <p class="text-gray-300 leading-relaxed">
-                        Currently, I serve as a <span class="text-white font-medium">Junior Shopify Developer</span> for ArtifyLab (UK), where I build high-performance e-commerce engines for international markets.
-                    </p>
+        <section class="min-h-screen flex flex-col justify-center items-center text-center pt-20 px-4 relative">
+            <div class="max-w-4xl stg" id="hero-content">
+                <div class="relative inline-block mb-10 group float-anim">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-full blur opacity-25 group-hover:opacity-60 transition duration-1000"></div>
+                    <img src="./Picture/Fuad.jpeg" alt="Fuad Hasan" class="relative w-40 h-40 md:w-52 md:h-52 rounded-full object-cover border-4 shadow-2xl" style="border-color: var(--glass-b);">
                 </div>
-            </div>
 
-            <div class="md:col-span-3 space-y-8">
-                <div>
-                    <h3 class="text-xl font-semibold text-gray-100 mb-4 flex items-center">
-                        <span class="w-8 h-px bg-blue-500 mr-3"></span> Core Focus
-                    </h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-colors">
-                            <span class="text-blue-400 font-bold block mb-1">Research</span>
-                            <p class="text-sm text-gray-400">Published 4+ papers in IEEE & specialized venues.</p>
-                        </div>
-                        <div class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-colors">
-                            <span class="text-blue-400 font-bold block mb-1">Development</span>
-                            <p class="text-sm text-gray-400">Shopify Liquid, Python, and Full-stack Web.</p>
-                        </div>
-                        <div class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-colors">
-                            <span class="text-blue-400 font-bold block mb-1">Competition</span>
-                            <p class="text-sm text-gray-400">ICPC Regionalist with 500+ problems solved.</p>
-                        </div>
-                        <div class="p-4 bg-gray-800/50 rounded-xl border border-gray-700 hover:border-blue-500/50 transition-colors">
-                            <span class="text-blue-400 font-bold block mb-1">Leadership</span>
-                            <p class="text-sm text-gray-400">Former Assistant General Secretary of SIU CSE Society.</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <p class="text-gray-400 italic border-l-4 border-blue-600 pl-4 py-2">
-                    "I am passionate about building intelligent, secure solutions that solve real-world problems through data-driven engineering."
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tighter leading-tight c1" style="transition: color 0.3s ease;">
+                    Fuad Hasan
+                </h1>
+
+                <p class="mt-4 text-xl md:text-2xl font-medium c3" style="transition: color 0.3s ease;">
+                    <span id="typewriter"></span><span class="tw-cursor"></span>
                 </p>
+
+                <p class="mt-6 max-w-2xl mx-auto text-lg leading-relaxed c3" style="transition: color 0.3s ease;">
+                    Final-year Computer Science student at <span class="ca">Sylhet International University</span> and <span class="ca">Junior Shopify Developer</span> at ArtifyLab. Bridging the gap between <span class="font-semibold c1" style="transition: color 0.3s ease;">Machine Learning research</span> and <span class="font-semibold c1" style="transition: color 0.3s ease;">global e-commerce solutions</span>.
+                </p>
+
+                <div class="mt-10 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="mailto:fuad43002@gmail.com" data-magnetic class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-bold rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-300">
+                        Contact Me
+                    </a>
+                    <a href="#projects" data-magnetic class="w-full sm:w-auto px-8 py-4 font-bold rounded-xl shadow-lg border transition-all duration-300 c1" style="background-color: var(--bg-card); border-color: var(--glass-b);">
+                        Explore Work
+                    </a>
+                </div>
             </div>
-        </div>
-    </div>
-</section>
-        <!-- Experience Section -->
-        <section id="experience" class="py-24 section-fade-in">
-    <h2 class="text-4xl font-bold text-center mb-12">Professional <span class="accent-gradient">Experience</span></h2>
-    <div class="max-w-3xl mx-auto relative border-l-2 border-gray-700 pl-10">
-        
-        <div class="mb-12">
-            <div class="absolute -left-4 top-1 w-8 h-8 bg-blue-600 rounded-full border-4 border-gray-800"></div>
-            <p class="text-sm text-gray-400">Oct 2025 - Present</p>
-            <h3 class="text-2xl font-semibold mt-1">Junior Shopify Developer</h3>
-            <p class="text-lg text-gray-300 font-medium">ArtifyLab (UK Registered Company)</p>
-            <p class="mt-2 text-gray-400">Developing and maintaining custom Shopify themes and applications for international clients, focusing on Liquid logic, performance optimization, and API integrations.</p>
-            
-            <div class="mt-4 flex flex-wrap gap-4">
-                <a href="https://call-power.myshopify.com" target="_blank" class="text-sm bg-gray-800 hover:bg-gray-700 text-blue-400 px-3 py-1 rounded-md border border-gray-700 transition-colors">
-                    🔗 Call-Power Store (Pass: artifylab)
-                </a>
-                <a href="https://artifylab-store.myshopify.com/" target="_blank" class="text-sm bg-gray-800 hover:bg-gray-700 text-blue-400 px-3 py-1 rounded-md border border-gray-700 transition-colors">
-                    🔗 ArtifyLab Store (Pass: artifylab)
-                </a>
+
+            <!-- Scroll Down Hint -->
+            <div class="absolute bottom-8 scroll-hint c4">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 14l-7 7m0 0l-7-7m7 7V3"/>
+                </svg>
             </div>
-        </div>
+        </section>
 
-        <div class="mb-12">
-            <div class="absolute -left-4 top-1 w-8 h-8 bg-blue-600 rounded-full border-4 border-gray-800"></div>
-            <p class="text-sm text-gray-400">2022 - Present</p>
-            <h3 class="text-2xl font-semibold mt-1">Exam Invigilator</h3>
-            <p class="text-lg text-gray-300 font-medium">British Council</p>
-            <p class="mt-2 text-gray-400">Maintained examination integrity and provided support to candidates, ensuring a secure and fair testing environment in high-stakes international settings.</p>
-        </div>
+        <!-- ===== About Section ===== -->
+        <section id="about" class="py-24 sr" style="background-color: var(--bg-sec); border-radius: 24px; margin: 0 -24px; padding-left: 24px; padding-right: 24px;">
+            <div class="max-w-5xl mx-auto px-4">
+                <div class="grid md:grid-cols-5 gap-12 items-start">
+                    <div class="md:col-span-2 space-y-6 sr-l">
+                        <div class="glass p-6 rounded-2xl">
+                            <h2 class="text-3xl font-bold mb-2 grad">About Me</h2>
+                            <div class="divider mb-6"></div>
+                            <p class="c3 leading-relaxed mb-4" style="transition: color 0.3s ease;">
+                                I am a results-driven researcher and developer at <span class="c1 font-medium" style="transition: color 0.3s ease;">Sylhet International University</span>, set to graduate in June 2026. My expertise lies at the intersection of <span class="ca">Cybersecurity</span> and <span class="ca">Artificial Intelligence</span>.
+                            </p>
+                            <p class="c3 leading-relaxed" style="transition: color 0.3s ease;">
+                                Currently, I serve as a <span class="c1 font-medium" style="transition: color 0.3s ease;">Junior Shopify Developer</span> for ArtifyLab (UK), where I build high-performance e-commerce engines for international markets.
+                            </p>
+                        </div>
+                    </div>
 
-        <div class="mb-12">
-            <div class="absolute -left-4 top-1 w-8 h-8 bg-blue-600 rounded-full border-4 border-gray-800"></div>
-            <p class="text-sm text-gray-400">2018 - 2023</p>
-            <h3 class="text-2xl font-semibold mt-1">Type Writer (Content Transcriber)</h3>
-            <p class="text-lg text-gray-300 font-medium">10 Minute School</p>
-            <p class="mt-2 text-gray-400">Accurately transcribed educational content, contributing to the accessibility and reach of one of the largest online learning platforms in Bangladesh.</p>
-        </div>
-    </div>
-</section>
+                    <div class="md:col-span-3 space-y-8 sr-r">
+                        <div>
+                            <h3 class="text-xl font-semibold c1 mb-4 flex items-center" style="transition: color 0.3s ease;">
+                                <span class="w-8 h-px mr-3" style="background: var(--accent);"></span> Core Focus
+                            </h3>
+                            <div class="grid grid-cols-2 gap-4 stg" id="focus-grid">
+                                <div class="card-glow p-4 rounded-xl">
+                                    <span class="ca font-bold block mb-1">Research</span>
+                                    <p class="text-sm c3" style="transition: color 0.3s ease;">Published 4+ papers in IEEE & specialized venues.</p>
+                                </div>
+                                <div class="card-glow p-4 rounded-xl">
+                                    <span class="ca font-bold block mb-1">Development</span>
+                                    <p class="text-sm c3" style="transition: color 0.3s ease;">Shopify Liquid, Python, and Full-stack Web.</p>
+                                </div>
+                                <div class="card-glow p-4 rounded-xl">
+                                    <span class="ca font-bold block mb-1">Competition</span>
+                                    <p class="text-sm c3" style="transition: color 0.3s ease;">ICPC Regionalist with 500+ problems solved.</p>
+                                </div>
+                                <div class="card-glow p-4 rounded-xl">
+                                    <span class="ca font-bold block mb-1">Leadership</span>
+                                    <p class="text-sm c3" style="transition: color 0.3s ease;">Former Assistant General Secretary of SIU CSE Society.</p>
+                                </div>
+                            </div>
+                        </div>
 
-        <!-- Projects Section -->
-        <section id="projects" class="py-24 section-fade-in">
-            <h2 class="text-4xl font-bold text-center mb-12">Featured <span class="accent-gradient">Projects</span></h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-2 gap-8">
-                <!-- Project Card 1 -->
-                <div class="glassmorphism p-6 rounded-xl transform hover:-translate-y-2 transition-transform duration-300">
-                    <h3 class="text-xl font-bold text-blue-400">Thyroid Cancer Prediction using ML</h3>
-                    <p class="mt-2 text-gray-400">A machine learning model designed to analyze patient data for early detection of thyroid cancer, focusing on high accuracy and performance.</p>
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">Python</span>
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">Scikit-learn</span>
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">Pandas</span>
-                    </div>
-                </div>
-                <!-- Project Card 2 -->
-                <div class="glassmorphism p-6 rounded-xl transform hover:-translate-y-2 transition-transform duration-300">
-                    <h3 class="text-xl font-bold text-blue-400">Medical Information Hub in Sylhet</h3>
-                    <p class="mt-2 text-gray-400">A web-based platform centralizing medical service information for the Sylhet region, making it easier to find doctors and clinics.</p>
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">HTML/CSS</span>
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">JavaScript</span>
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">PHP</span>
-                         <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">MySQL</span>
-                    </div>
-                </div>
-                <!-- Project Card 3 -->
-                <div class="glassmorphism p-6 rounded-xl transform hover:-translate-y-2 transition-transform duration-300">
-                    <h3 class="text-xl font-bold text-blue-400">SIU ICT Fest 2025 Official Website</h3>
-                    <p class="mt-2 text-gray-400">Developed the official dynamic website for the university's flagship ICT event, managing registrations, schedules, and announcements.</p>
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">Web Development</span>
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">UI/UX</span>
-                    </div>
-                </div>
-                 <!-- Project Card 4 -->
-                 <div class="glassmorphism p-6 rounded-xl transform hover:-translate-y-2 transition-transform duration-300">
-                    <h3 class="text-xl font-bold text-blue-400">E-commerce Pharmacy Website</h3>
-                    <p class="mt-2 text-gray-400">A complete online pharmacy store with user authentication, product catalogs, and a functional shopping cart system.</p>
-                    <div class="mt-4 flex flex-wrap gap-2">
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">Web Development</span>
-                        <span class="bg-gray-700 text-xs font-semibold px-2 py-1 rounded-full">E-commerce</span>
+                        <p class="c3 italic border-l-4 pl-4 py-2" style="border-color: var(--accent); transition: color 0.3s ease;">
+                            "I am passionate about building intelligent, secure solutions that solve real-world problems through data-driven engineering."
+                        </p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Publications Section -->
-        <section id="publications" class="py-24 section-fade-in">
-    <div class="max-w-4xl mx-auto text-center">
-        <h2 class="text-4xl font-bold mb-8">Research & <span class="accent-gradient">Publications</span></h2>
-        
-        <div class="space-y-6">
-            
-            <div class="glassmorphism p-8 rounded-xl text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-blue-400 mb-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                <h3 class="text-2xl font-semibold text-blue-300">Towards An XAI-Enhanced Machine Learning Framework for Unmasking Cybersecurity Threats with Intelligent Feature Scoring in Telesurgery</h3>
-                <p class="mt-2 text-gray-400">
-                    Presented at the <span class="font-medium text-gray-200">QPAIN 2026</span>This research focuses on utilizing Explainable AI (XAI) to provide transparent and interpretable threat detection in medical robotic systems.
-                </p>
-            </div>
+        <!-- ===== Experience Section ===== -->
+        <section id="experience" class="py-24 sr">
+            <h2 class="text-4xl font-bold text-center mb-4 c1" style="transition: color 0.3s ease;">Professional <span class="grad">Experience</span></h2>
+            <div class="flex justify-center mb-12"><div class="divider"></div></div>
+            <div class="max-w-3xl mx-auto relative pl-10" style="border-left: 2px solid var(--tl);">
 
-            <div class="glassmorphism p-8 rounded-xl text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-blue-400 mb-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                <h3 class="text-2xl font-semibold text-blue-300">BNFF-WaveGraph: A BiDirectional Node Fusion–Fission Hybrid Deep Learning Architecture for Android Malware Detection</h3>
-                <p class="mt-2 text-gray-400">
-                    Presented at the <span class="font-medium text-gray-200">11th IEEE International WIECON-ECE 2025</span>This paper proposes a novel graph-based neural network architecture designed to identify complex malware patterns in the Android ecosystem.
-                </p>
-            </div>
-
-            <div class="glassmorphism p-8 rounded-xl text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-blue-400 mb-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                <h3 class="text-2xl font-semibold text-blue-300">Genetic Algorithm with Optimised Extra Tree Ensemble for Enhanced Intrusion Detection in IoMT Networks</h3>
-                <p class="mt-2 text-gray-400">
-                    Presented at the <span class="font-medium text-gray-200">11th IEEE International WIECON-ECE 2025</span>This work optimizes intrusion detection systems for the Internet of Medical Things (IoMT) using evolutionary computing techniques.
-                </p>
-            </div>
-
-            <div class="glassmorphism p-8 rounded-xl text-left">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-8 h-8 text-blue-400 mb-4"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-                <h3 class="text-2xl font-semibold text-blue-300">Towards A Machine Learning-Enabled Framework for Cybersecurity Threat Detection in Telesurgery</h3>
-                <p class="mt-2 text-gray-400">
-                    Accepted and presented at the <span class="font-medium text-gray-200">IEEE CS BDC Summer Symposium 2025</span>This research establishes a fundamental framework for enhancing the security of remote surgical procedures using machine learning models.
-                </p>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-        <!-- Achievements & Activities Section -->
-        <section id="achievements" class="py-24 section-fade-in">
-            <h2 class="text-4xl font-bold text-center mb-12">Achievements & <span class="accent-gradient">Activities</span></h2>
-            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8">
-                <div class="glassmorphism p-6 rounded-xl">
-                    <h3 class="text-xl font-bold mb-4 text-blue-400">Awards & Recognition</h3>
-                    <ul class="space-y-3 text-gray-300">
-                         <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> 1st Runners-Up SIU ICT Fest 2025-IUPC (2025)</li>
-                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> Coder of the Month - CSE Dept, SIU (Feb 2025)</li>
-                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> Certificate of Appreciation - Futurenation (UNDP)</li>
-                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> 7th Place, Programming Contest by Sylhet Bondhusava</li>
-                        
-
-                    </ul>
-                </div>
-                <div class="glassmorphism p-6 rounded-xl">
-                    <h3 class="text-xl font-bold mb-4 text-blue-400">Leadership & Volunteering</h3>
-                    <ul class="space-y-3 text-gray-300">
-                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> Assistant General Secretary, SIU CSE Society</li>
-                         <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> Campus Ambassador: Futurenation (UNDP).</li>
-                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> Campus Ambassador & Developer, bdapps</li>
-                        <li class="flex items-start"><span class="text-blue-500 mr-3 mt-1">&#10003;</span> Volunteer, Bangladesh Physics Olympiad (2024, 2025)</li>
-                    </ul>
-                </div>
-                <div class="glassmorphism p-6 rounded-xl md:col-span-2">
-                    <h3 class="text-xl font-bold mb-4 text-blue-400">Competitive Programming</h3>
-                    <p class="text-gray-300 mb-4">Participant in numerous prestigious contests, including:</p>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="bg-gray-700 text-sm font-semibold px-3 py-1 rounded-full">ICPC Dhaka Regional '23</span>
-                        <span class="bg-gray-700 text-sm font-semibold px-3 py-1 rounded-full">SUST IUPC '22 & '24</span>
-                        <span class="bg-gray-700 text-sm font-semibold px-3 py-1 rounded-full">DUET IUPC '25</span>
-                        <span class="bg-gray-700 text-sm font-semibold px-3 py-1 rounded-full">UIU IUPC '25</span>
-                        <span class="bg-gray-700 text-sm font-semibold px-3 py-1 rounded-full">MU IUPC '24 & '25</span>
+                <div class="mb-12 sr-l">
+                    <div class="absolute -left-4 w-8 h-8 rounded-full border-4 tl-dot" style="background: var(--accent); border-color: var(--bg);"></div>
+                    <p class="text-sm c3" style="transition: color 0.3s ease;">Oct 2025 - Present</p>
+                    <h3 class="text-2xl font-semibold mt-1 c1" style="transition: color 0.3s ease;">Junior Shopify Developer</h3>
+                    <p class="text-lg font-medium c2" style="transition: color 0.3s ease;">ArtifyLab (UK Registered Company)</p>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">Developing and maintaining custom Shopify themes and applications for international clients, focusing on Liquid logic, performance optimization, and API integrations.</p>
+                    <div class="mt-4 flex flex-wrap gap-4">
+                        <a href="https://call-power.myshopify.com" target="_blank" class="text-sm ca px-3 py-1 rounded-md border transition-colors card-glow" style="transition: color 0.3s ease;">
+                            Call-Power Store (Pass: artifylab)
+                        </a>
+                        <a href="https://artifylab-store.myshopify.com/" target="_blank" class="text-sm ca px-3 py-1 rounded-md border transition-colors card-glow" style="transition: color 0.3s ease;">
+                            ArtifyLab Store (Pass: artifylab)
+                        </a>
                     </div>
-                     <p class="text-gray-300 mt-6">Solved 500+ problems on platforms like 
-                        <a href="https://codeforces.com/profile/FuadHasan43" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">Codeforces</a> and 
-                        <a href="https://leetcode.com/fuad43002/" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline">LeetCode</a>.
+                </div>
+
+                <div class="mb-12 sr-l" style="transition-delay: 0.1s;">
+                    <div class="absolute -left-4 w-8 h-8 rounded-full border-4" style="background: var(--accent); border-color: var(--bg);"></div>
+                    <p class="text-sm c3" style="transition: color 0.3s ease;">2022 - Present</p>
+                    <h3 class="text-2xl font-semibold mt-1 c1" style="transition: color 0.3s ease;">Exam Invigilator</h3>
+                    <p class="text-lg font-medium c2" style="transition: color 0.3s ease;">British Council</p>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">Maintained examination integrity and provided support to candidates, ensuring a secure and fair testing environment in high-stakes international settings.</p>
+                </div>
+
+                <div class="mb-12 sr-l" style="transition-delay: 0.2s;">
+                    <div class="absolute -left-4 w-8 h-8 rounded-full border-4" style="background: var(--accent); border-color: var(--bg);"></div>
+                    <p class="text-sm c3" style="transition: color 0.3s ease;">2018 - 2023</p>
+                    <h3 class="text-2xl font-semibold mt-1 c1" style="transition: color 0.3s ease;">Type Writer (Content Transcriber)</h3>
+                    <p class="text-lg font-medium c2" style="transition: color 0.3s ease;">10 Minute School</p>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">Accurately transcribed educational content, contributing to the accessibility and reach of one of the largest online learning platforms in Bangladesh.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Projects Section ===== -->
+        <section id="projects" class="py-24 sr">
+            <h2 class="text-4xl font-bold text-center mb-4 c1" style="transition: color 0.3s ease;">Featured <span class="grad">Projects</span></h2>
+            <div class="flex justify-center mb-12"><div class="divider"></div></div>
+            <div class="grid md:grid-cols-2 gap-8 stg" id="projects-grid">
+                <div class="card-glow p-6 rounded-xl">
+                    <h3 class="text-xl font-bold ca">Thyroid Cancer Prediction using ML</h3>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">A machine learning model designed to analyze patient data for early detection of thyroid cancer, focusing on high accuracy and performance.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">Python</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">Scikit-learn</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">Pandas</span>
+                    </div>
+                </div>
+                <div class="card-glow p-6 rounded-xl">
+                    <h3 class="text-xl font-bold ca">Medical Information Hub in Sylhet</h3>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">A web-based platform centralizing medical service information for the Sylhet region, making it easier to find doctors and clinics.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">HTML/CSS</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">JavaScript</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">PHP</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">MySQL</span>
+                    </div>
+                </div>
+                <div class="card-glow p-6 rounded-xl">
+                    <h3 class="text-xl font-bold ca">SIU ICT Fest 2025 Official Website</h3>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">Developed the official dynamic website for the university's flagship ICT event, managing registrations, schedules, and announcements.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">Web Development</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">UI/UX</span>
+                    </div>
+                </div>
+                <div class="card-glow p-6 rounded-xl">
+                    <h3 class="text-xl font-bold ca">E-commerce Pharmacy Website</h3>
+                    <p class="mt-2 c3" style="transition: color 0.3s ease;">A complete online pharmacy store with user authentication, product catalogs, and a functional shopping cart system.</p>
+                    <div class="mt-4 flex flex-wrap gap-2">
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">Web Development</span>
+                        <span class="bg-t text-xs font-semibold px-2 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">E-commerce</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Publications Section ===== -->
+        <section id="publications" class="py-24 sr">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold mb-4 c1" style="transition: color 0.3s ease;">Research & <span class="grad">Publications</span></h2>
+                <div class="flex justify-center mb-8"><div class="divider"></div></div>
+
+                <div class="space-y-6 stg" id="pubs-grid">
+                    <div class="card-glow glass p-8 rounded-xl text-left">
+                        <svg class="w-8 h-8 ca mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <h3 class="text-2xl font-semibold ca">Towards An XAI-Enhanced Machine Learning Framework for Unmasking Cybersecurity Threats with Intelligent Feature Scoring in Telesurgery</h3>
+                        <p class="mt-2 c3" style="transition: color 0.3s ease;">
+                            Presented at the <span class="font-medium c1" style="transition: color 0.3s ease;">QPAIN 2026</span> &mdash; This research focuses on utilizing Explainable AI (XAI) to provide transparent and interpretable threat detection in medical robotic systems.
+                        </p>
+                    </div>
+
+                    <div class="card-glow glass p-8 rounded-xl text-left">
+                        <svg class="w-8 h-8 ca mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <h3 class="text-2xl font-semibold ca">BNFF-WaveGraph: A BiDirectional Node Fusion-Fission Hybrid Deep Learning Architecture for Android Malware Detection</h3>
+                        <p class="mt-2 c3" style="transition: color 0.3s ease;">
+                            Presented at the <span class="font-medium c1" style="transition: color 0.3s ease;">11th IEEE International WIECON-ECE 2025</span> &mdash; This paper proposes a novel graph-based neural network architecture designed to identify complex malware patterns in the Android ecosystem.
+                        </p>
+                    </div>
+
+                    <div class="card-glow glass p-8 rounded-xl text-left">
+                        <svg class="w-8 h-8 ca mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <h3 class="text-2xl font-semibold ca">Genetic Algorithm with Optimised Extra Tree Ensemble for Enhanced Intrusion Detection in IoMT Networks</h3>
+                        <p class="mt-2 c3" style="transition: color 0.3s ease;">
+                            Presented at the <span class="font-medium c1" style="transition: color 0.3s ease;">11th IEEE International WIECON-ECE 2025</span> &mdash; This work optimizes intrusion detection systems for the Internet of Medical Things (IoMT) using evolutionary computing techniques.
+                        </p>
+                    </div>
+
+                    <div class="card-glow glass p-8 rounded-xl text-left">
+                        <svg class="w-8 h-8 ca mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                        <h3 class="text-2xl font-semibold ca">Towards A Machine Learning-Enabled Framework for Cybersecurity Threat Detection in Telesurgery</h3>
+                        <p class="mt-2 c3" style="transition: color 0.3s ease;">
+                            Accepted and presented at the <span class="font-medium c1" style="transition: color 0.3s ease;">IEEE CS BDC Summer Symposium 2025</span> &mdash; This research establishes a fundamental framework for enhancing the security of remote surgical procedures using machine learning models.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Achievements Section ===== -->
+        <section id="achievements" class="py-24 sr">
+            <h2 class="text-4xl font-bold text-center mb-4 c1" style="transition: color 0.3s ease;">Achievements & <span class="grad">Activities</span></h2>
+            <div class="flex justify-center mb-12"><div class="divider"></div></div>
+            <div class="max-w-5xl mx-auto grid md:grid-cols-2 gap-8 stg" id="achievements-grid">
+                <div class="card-glow glass p-6 rounded-xl">
+                    <h3 class="text-xl font-bold ca mb-4">Awards & Recognition</h3>
+                    <ul class="space-y-3 c2" style="transition: color 0.3s ease;">
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> 1st Runners-Up SIU ICT Fest 2025-IUPC (2025)</li>
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> Coder of the Month - CSE Dept, SIU (Feb 2025)</li>
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> Certificate of Appreciation - Futurenation (UNDP)</li>
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> 7th Place, Programming Contest by Sylhet Bondhusava</li>
+                    </ul>
+                </div>
+                <div class="card-glow glass p-6 rounded-xl">
+                    <h3 class="text-xl font-bold ca mb-4">Leadership & Volunteering</h3>
+                    <ul class="space-y-3 c2" style="transition: color 0.3s ease;">
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> Assistant General Secretary, SIU CSE Society</li>
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> Campus Ambassador: Futurenation (UNDP).</li>
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> Campus Ambassador & Developer, bdapps</li>
+                        <li class="flex items-start"><span class="ca mr-3 mt-1">&#10003;</span> Volunteer, Bangladesh Physics Olympiad (2024, 2025)</li>
+                    </ul>
+                </div>
+                <div class="card-glow glass p-6 rounded-xl md:col-span-2">
+                    <h3 class="text-xl font-bold ca mb-4">Competitive Programming</h3>
+                    <p class="c2 mb-4" style="transition: color 0.3s ease;">Participant in numerous prestigious contests, including:</p>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="bg-t text-sm font-semibold px-3 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">ICPC Dhaka Regional '23</span>
+                        <span class="bg-t text-sm font-semibold px-3 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">SUST IUPC '22 & '24</span>
+                        <span class="bg-t text-sm font-semibold px-3 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">DUET IUPC '25</span>
+                        <span class="bg-t text-sm font-semibold px-3 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">UIU IUPC '25</span>
+                        <span class="bg-t text-sm font-semibold px-3 py-1 rounded-full c2" style="transition: background-color 0.3s ease, color 0.3s ease;">MU IUPC '24 & '25</span>
+                    </div>
+                    <p class="c2 mt-6" style="transition: color 0.3s ease;">Solved 500+ problems on platforms like
+                        <a href="https://codeforces.com/profile/FuadHasan43" target="_blank" rel="noopener noreferrer" class="ca hover:underline">Codeforces</a> and
+                        <a href="https://leetcode.com/fuad43002/" target="_blank" rel="noopener noreferrer" class="ca hover:underline">LeetCode</a>.
                     </p>
                 </div>
             </div>
         </section>
     </main>
 
-    <!-- Resume Section -->
-    <section id="resume" class="py-24 section-fade-in">
+    <!-- ===== Resume Section ===== -->
+    <section id="resume" class="py-24 sr">
         <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-4xl font-bold mb-4">My <span class="accent-gradient">Resume</span></h2>
-            <p class="text-lg text-gray-400 mb-8">
+            <h2 class="text-4xl font-bold mb-4 c1" style="transition: color 0.3s ease;">My <span class="grad">Resume</span></h2>
+            <div class="flex justify-center mb-8"><div class="divider"></div></div>
+            <p class="text-lg c3 mb-8" style="transition: color 0.3s ease;">
                 For a more detailed look at my skills, experience, and projects, please download my full resume.
             </p>
-            <a href="./cv/Fuad-Hasan.pdf" download="Fuad_Hasan_Resume.pdf" class="inline-block px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transform hover:-translate-y-1 transition-all duration-300">
+            <a href="./cv/Fuad-Hasan.pdf" download="Fuad_Hasan_Resume.pdf" data-magnetic class="inline-block px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg shadow-lg hover:bg-blue-700 transition-all duration-300">
                 Download CV
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-6 h-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                <svg class="inline-block w-6 h-6 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
             </a>
-             
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer id="contact" class="border-t border-gray-800">
+    <!-- ===== Footer / Contact ===== -->
+    <footer id="contact" class="border-t sr" style="border-color: var(--glass-b);">
         <div class="container mx-auto px-6 py-12 text-center">
-            <h2 class="text-3xl font-bold mb-4">Let's Connect</h2>
-            <p class="max-w-md mx-auto text-gray-400 mb-8">
+            <h2 class="text-3xl font-bold mb-4 c1" style="transition: color 0.3s ease;">Let's Connect</h2>
+            <div class="flex justify-center mb-6"><div class="divider"></div></div>
+            <p class="max-w-md mx-auto c3 mb-8" style="transition: color 0.3s ease;">
                 I'm currently seeking new opportunities and am open to collaboration. Feel free to reach out.
             </p>
-            <a href="mailto:fuad43002@gmail.com" class="text-2xl font-semibold text-blue-400 hover:text-blue-500 transition-colors">fuad43002@gmail.com</a>
-            <p class="mt-4 text-lg text-gray-400">01708015296</p>
+            <a href="mailto:fuad43002@gmail.com" class="text-2xl font-semibold ca hover:opacity-80 transition-opacity">fuad43002@gmail.com</a>
+            <p class="mt-4 text-lg c3" style="transition: color 0.3s ease;">01708015296</p>
             <div class="flex justify-center space-x-6 mt-8">
-                <!-- Social Links -->
-                <a href="https://github.com/fuadhasan1122" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" aria-label="GitHub">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                <a href="https://github.com/fuadhasan1122" target="_blank" rel="noopener noreferrer" data-magnetic class="c3 hover:c1 transition-colors" aria-label="GitHub" style="transition: color 0.3s ease;">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
                 </a>
-                <a href="https://www.linkedin.com/in/fuad-hasan11/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" aria-label="LinkedIn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                <a href="https://www.linkedin.com/in/fuad-hasan11/" target="_blank" rel="noopener noreferrer" data-magnetic class="c3 hover:c1 transition-colors" aria-label="LinkedIn" style="transition: color 0.3s ease;">
+                    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
                 </a>
-                 <a href="https://leetcode.com/fuad43002/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-white transition-colors" aria-label="LeetCode">
-                   <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" class="w-7 h-7"><path d="M13.483 0a1.374 1.374 0 0 0-1.374 1.374v10.852h-2.148V1.374A1.374 1.374 0 0 0 8.588 0a1.374 1.374 0 0 0-1.374 1.374v10.852H5.066V1.374A1.374 1.374 0 0 0 3.692 0a1.374 1.374 0 0 0-1.374 1.374v18.739A1.374 1.374 0 0 0 3.692 21.5h15.243a1.374 1.374 0 0 0 1.374-1.374V1.374A1.374 1.374 0 0 0 18.934 0h-5.451zm6.836 12.226H2.318V1.374a1.374 1.374 0 0 0 1.374-1.374h15.243a1.374 1.374 0 0 0 1.374 1.374v10.852z"></path></svg>
+                <a href="https://leetcode.com/fuad43002/" target="_blank" rel="noopener noreferrer" data-magnetic class="c3 hover:c1 transition-colors" aria-label="LeetCode" style="transition: color 0.3s ease;">
+                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor"><path d="M13.483 0a1.374 1.374 0 0 0-1.374 1.374v10.852h-2.148V1.374A1.374 1.374 0 0 0 8.588 0a1.374 1.374 0 0 0-1.374 1.374v10.852H5.066V1.374A1.374 1.374 0 0 0 3.692 0a1.374 1.374 0 0 0-1.374 1.374v18.739A1.374 1.374 0 0 0 3.692 21.5h15.243a1.374 1.374 0 0 0 1.374-1.374V1.374A1.374 1.374 0 0 0 18.934 0h-5.451zm6.836 12.226H2.318V1.374a1.374 1.374 0 0 0 1.374-1.374h15.243a1.374 1.374 0 0 0 1.374 1.374v10.852z"/></svg>
                 </a>
             </div>
-            <p class="mt-8 text-gray-500 text-sm">&copy; 2025 Fuad Hasan. All Rights Reserved.</p>
+            <p class="mt-8 c4 text-sm" style="transition: color 0.3s ease;">&copy; 2025 Fuad Hasan. All Rights Reserved.</p>
         </div>
     </footer>
 
+    </div><!-- /page-wrap -->
+
+    <!-- ===== Lenis Smooth Scroll ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1/dist/lenis.min.js"></script>
+
     <script>
-        // Mobile Menu Toggle
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
+    (function() {
+        'use strict';
+
+        // ===== 1. Lenis Smooth Scroll with Inertia =====
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
+            smooth: true,
+            smoothTouch: false,
+            touchMultiplier: 2
         });
 
-        // Typewriter Effect
-        const typewriterElement = document.getElementById('typewriter');
-        const phrases = ["Software Developer", "Machine Learning Enthusiast", "Competitive Programmer", "Problem Solver"];
-        let phraseIndex = 0;
-        let charIndex = 0;
-        let isDeleting = false;
-
-        function type() {
-            const currentPhrase = phrases[phraseIndex];
-            if (isDeleting) {
-                typewriterElement.textContent = currentPhrase.substring(0, charIndex - 1);
-                charIndex--;
-            } else {
-                typewriterElement.textContent = currentPhrase.substring(0, charIndex + 1);
-                charIndex++;
-            }
-
-            let typeSpeed = isDeleting ? 100 : 200;
-
-            if (!isDeleting && charIndex === currentPhrase.length) {
-                typeSpeed = 2000;
-                isDeleting = true;
-            } else if (isDeleting && charIndex === 0) {
-                isDeleting = false;
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-                typeSpeed = 500;
-            }
-
-            setTimeout(type, typeSpeed);
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
         }
+        requestAnimationFrame(raf);
 
-        document.addEventListener('DOMContentLoaded', type);
-
-        // Section Fade-in on Scroll
-        const sections = document.querySelectorAll('.section-fade-in');
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
+        // Anchor link smooth scroll via Lenis
+        document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+            anchor.addEventListener('click', function(e) {
+                var target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    e.preventDefault();
+                    lenis.scrollTo(target, { offset: -80 });
                 }
             });
-        }, {
-            threshold: 0.1
         });
 
-        sections.forEach(section => {
-            observer.observe(section);
+        // ===== 2. Cursor-Following Gradient =====
+        var cursorGlow = document.getElementById('cursor-glow');
+        var cx = 0, cy = 0, tx = 0, ty = 0;
+        var hasPointer = window.matchMedia('(pointer: fine)').matches;
+
+        if (!hasPointer) {
+            cursorGlow.style.display = 'none';
+        }
+
+        document.addEventListener('mousemove', function(e) {
+            tx = e.clientX;
+            ty = e.clientY;
         });
 
+        function updateCursor() {
+            cx += (tx - cx) * 0.08;
+            cy += (ty - cy) * 0.08;
+            document.documentElement.style.setProperty('--cx', cx + 'px');
+            document.documentElement.style.setProperty('--cy', cy + 'px');
+            requestAnimationFrame(updateCursor);
+        }
+        if (hasPointer) updateCursor();
+
+        // ===== 3. Magnetic Buttons =====
+        if (hasPointer) {
+            document.querySelectorAll('[data-magnetic]').forEach(function(el) {
+                el.addEventListener('mousemove', function(e) {
+                    var rect = el.getBoundingClientRect();
+                    var x = e.clientX - rect.left - rect.width / 2;
+                    var y = e.clientY - rect.top - rect.height / 2;
+                    el.style.transform = 'translate(' + (x * 0.25) + 'px, ' + (y * 0.25) + 'px)';
+                });
+                el.addEventListener('mouseleave', function() {
+                    el.style.transform = 'translate(0, 0)';
+                });
+            });
+        }
+
+        // ===== 4. Scroll Progress Bar =====
+        var scrollBar = document.getElementById('scroll-bar');
+        window.addEventListener('scroll', function() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+            scrollBar.style.width = progress + '%';
+        });
+
+        // ===== 5. Scroll Reveal (Section Storytelling) =====
+        var revealEls = document.querySelectorAll('.sr, .sr-l, .sr-r, .sr-s, .stg');
+        var revealObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('v');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+        revealEls.forEach(function(el) { revealObserver.observe(el); });
+
+        // ===== 6. Card Glow Effect =====
+        if (hasPointer) {
+            document.querySelectorAll('.card-glow').forEach(function(card) {
+                card.addEventListener('mousemove', function(e) {
+                    var rect = card.getBoundingClientRect();
+                    card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+                    card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+                });
+            });
+        }
+
+        // ===== 7. Particle System =====
+        var canvas = document.getElementById('particles');
+        var ctx = canvas.getContext('2d');
+        var particles = [];
+        var particleCount = window.innerWidth < 768 ? 25 : 45;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        function Particle() {
+            this.reset();
+        }
+        Particle.prototype.reset = function() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.size = Math.random() * 1.5 + 0.5;
+            this.vx = (Math.random() - 0.5) * 0.2;
+            this.vy = (Math.random() - 0.5) * 0.2;
+            this.opacity = Math.random() * 0.25 + 0.05;
+        };
+        Particle.prototype.update = function() {
+            this.x += this.vx;
+            this.y += this.vy;
+            if (this.x < -10 || this.x > canvas.width + 10 || this.y < -10 || this.y > canvas.height + 10) {
+                this.reset();
+            }
+        };
+        Particle.prototype.draw = function() {
+            var rgb = getComputedStyle(document.documentElement).getPropertyValue('--prgb').trim();
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + rgb + ', ' + this.opacity + ')';
+            ctx.fill();
+        };
+
+        for (var i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            var rgb = getComputedStyle(document.documentElement).getPropertyValue('--prgb').trim();
+
+            for (var i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+
+            // Subtle connections
+            for (var i = 0; i < particles.length; i++) {
+                for (var j = i + 1; j < particles.length; j++) {
+                    var dx = particles[i].x - particles[j].x;
+                    var dy = particles[i].y - particles[j].y;
+                    var dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 120) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = 'rgba(' + rgb + ', ' + (0.04 * (1 - dist / 120)) + ')';
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // ===== 8. Theme Toggle =====
+        var savedTheme = localStorage.getItem('portfolio-theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        function toggleTheme() {
+            var current = document.documentElement.getAttribute('data-theme');
+            var next = current === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', next);
+            localStorage.setItem('portfolio-theme', next);
+        }
+
+        var toggle1 = document.getElementById('theme-toggle');
+        var toggle2 = document.getElementById('theme-toggle-mobile');
+        if (toggle1) toggle1.addEventListener('click', toggleTheme);
+        if (toggle2) toggle2.addEventListener('click', toggleTheme);
+
+        // ===== 9. Active Nav Link Tracking =====
+        var navLinks = document.querySelectorAll('.nav-a');
+        var navSections = document.querySelectorAll('section[id]');
+        var navObserver = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(function(link) { link.classList.remove('active'); });
+                    var activeLink = document.querySelector('.nav-a[href="#' + entry.target.id + '"]');
+                    if (activeLink) activeLink.classList.add('active');
+                }
+            });
+        }, { threshold: 0.3, rootMargin: '-80px 0px -40% 0px' });
+
+        navSections.forEach(function(section) { navObserver.observe(section); });
+
+        // ===== 10. Mobile Menu =====
+        var mobileMenuButton = document.getElementById('mobile-menu-button');
+        var mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('open');
+        });
+        mobileMenu.querySelectorAll('a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                mobileMenu.classList.remove('open');
+            });
+        });
+
+        // ===== 11. Typewriter Effect =====
+        var typewriterEl = document.getElementById('typewriter');
+        var phrases = ['Software Developer', 'Machine Learning Enthusiast', 'Competitive Programmer', 'Problem Solver'];
+        var phraseIdx = 0, charIdx = 0, deleting = false;
+
+        function typewrite() {
+            var phrase = phrases[phraseIdx];
+            if (deleting) {
+                typewriterEl.textContent = phrase.substring(0, charIdx - 1);
+                charIdx--;
+            } else {
+                typewriterEl.textContent = phrase.substring(0, charIdx + 1);
+                charIdx++;
+            }
+            var speed = deleting ? 60 : 120;
+            if (!deleting && charIdx === phrase.length) {
+                speed = 2000;
+                deleting = true;
+            } else if (deleting && charIdx === 0) {
+                deleting = false;
+                phraseIdx = (phraseIdx + 1) % phrases.length;
+                speed = 400;
+            }
+            setTimeout(typewrite, speed);
+        }
+
+        // ===== 12. Page Load Animation =====
+        var pageWrap = document.getElementById('page-wrap');
+        var heroContent = document.getElementById('hero-content');
+
+        function onLoad() {
+            pageWrap.classList.add('loaded');
+            // Trigger hero stagger animation
+            setTimeout(function() {
+                if (heroContent) heroContent.classList.add('v');
+            }, 200);
+        }
+
+        if (document.readyState === 'complete') {
+            onLoad();
+        } else {
+            window.addEventListener('load', onLoad);
+        }
+
+        // Start typewriter
+        typewrite();
+
+    })();
     </script>
 </body>
 </html>
-
-
